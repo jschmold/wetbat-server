@@ -6,8 +6,6 @@ const { existsSync } = require('fs');
 
 if (existsSync('./.env')) dotenv.config();
 
-console.log(process.env.DATABASE_URL);
-
 module.exports = {
   "moduleFileExtensions": [ "js", "json", "ts" ],
   "moduleNameMapper": {
