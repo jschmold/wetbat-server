@@ -1,6 +1,7 @@
 import { EntitySchema } from 'typeorm';
 
 /** The basic required type for a Model to work with TypeOrm */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Model = string | Function | EntitySchema<any>;
 
 /**

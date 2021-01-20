@@ -1,6 +1,11 @@
 import { Exclude, Expose } from "class-transformer";
 import {IsOptional, IsString, IsUUID, IsDate} from "class-validator";
 
+/**
+ * this datatype is responsible for ensuring that the user is correctly trying
+ * to update a quote model. Check if the dates are valid BEFORE passing this
+ * to a service.
+ */
 @Exclude()
 export class UpdateQuoteDTO {
   @Expose()
@@ -29,11 +34,10 @@ export class UpdateQuoteDTO {
   public travelMethod?: string;
   
   public get datesAreValid(): boolean {
-    if (!this.departureDate || !this.returnDate) return false;
-
-    const ddate = this.departureDate.getTime();
-    const rdate = this.returnDate.getTime();
-    return ddate > Date.now() && rdate > Date.now();
+    const dates = [ this.departureDate, this.returnDate ].filter(a => !!a);
+    return dates.length > 0
+      ? dates.every(a => a.getTime() > Date.now())
+      : true;
   }
 
 }

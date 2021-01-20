@@ -1,11 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {classToPlain} from 'class-transformer';
 import { Repository } from 'typeorm';
 import { CreateQuoteDTO } from './dto/create-quote.dto';
-import {UpdateQuoteDTO} from './dto/update-quote.dto';
+import { UpdateQuoteDTO } from './dto/update-quote.dto';
 import { QuoteModel } from './models/quote.model';
 
+/**
+ * The service responsible for interfacing with the database and providing QuoteModel specific
+ * functionality to the application
+ */
 @Injectable()
 export class QuotesService {
 
@@ -34,26 +37,29 @@ export class QuotesService {
    * there are no quotes matching the id provided. Returns the latest version of a quote.
    */
   public async updateQuote(id: string, arg: UpdateQuoteDTO) : Promise<QuoteModel> {
+    const target = await this.quoteRepo.findOne(id);
+    if (!target) {
+      throw new NotFoundException();
+    }
+
     const updateData: Partial<QuoteModel> = {};
     for (const [ key, value ] of Object.entries(arg)) {
       if (value == null) continue;
       updateData[key] = value;
     }
 
-    if (Object.keys(updateData).length === 0) {
-      return this.quoteRepo.findOne(id);
-    }
+    await this.quoteRepo.createQueryBuilder()
+      .update(updateData)
+      .whereEntity(target)
+      .returning('*')
+      .execute();
 
-    const result = await this.quoteRepo.update(id, updateData);
-    if (result.affected === 0) {
-      throw new NotFoundException();
-    }
-
-    return this.quoteRepo.findOne(id);
+    return target;
   }
 
   /**
-   * A simple "give me everything" service method without pagination or filters.
+   * A simple "give me everything" service method without pagination or filters. Sorts by
+   * descending created dates
    */
   public async listAll(): Promise<QuoteModel[]> {
     const all = await this.quoteRepo.find({ order: { createdAt: -1 } });
