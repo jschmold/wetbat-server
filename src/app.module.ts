@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from './shared/config.service';
 import { SharedModule } from './shared/shared.module';
+import { QuotesModule } from './quotes/quotes.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SharedModule } from './shared/shared.module';
         };
       },
     }),
+    QuotesModule,
   ],
   controllers: [],
   providers: [],
