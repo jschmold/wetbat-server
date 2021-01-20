@@ -12,6 +12,12 @@ export class QuoteModel {
   @PrimaryColumn('uuid')
   public id: string;
 
+  @Column({ name: 'created_at', type: 'timestamptz' })
+  public createdAt: Date;
+
+  @Column({ name: 'updated_at', type: 'timestamptz' })
+  public updatedAt: Date;
+
   @Column({ type: 'varchar', length: 256 })
   public name: string;
 

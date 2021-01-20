@@ -44,5 +44,4 @@ export class QuoteProvider extends DatabaseProvider<QuoteModel> {
 
     return created;
   }
-
 }

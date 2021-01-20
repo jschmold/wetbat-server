@@ -7,10 +7,13 @@ import { QuotesService } from "@app/quotes/quotes.service";
 import { Database } from "@e2e/database";
 import { DestinationProvider } from "@e2e/providers/destination.provider";
 import { QuoteProvider } from "@e2e/providers/quote.provider";
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, NotFoundException } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { CreateQuoteDTO } from '@app/quotes/dto/create-quote.dto';
 import { QuoteModel } from '@app/quotes/models/quote.model';
+import { plainToClass } from 'class-transformer';
+import { UpdateQuoteDTO } from '@app/quotes/dto/update-quote.dto';
+import { v4 as uuid } from 'uuid';
 
 describe('QuotesModule - QuotesService', () => {
   let app: INestApplication;
@@ -89,5 +92,77 @@ describe('QuotesModule - QuotesService', () => {
       const row: QuoteModel = await quoteProvider.repo.findOne(model.id);
       expect(row).toEqual(model);
     });
+  });
+
+  describe('#updateQuote', () => {
+    let quote: QuoteModel;
+
+    beforeEach(async () => {
+      const data = {
+        name: loremIpsum({ count: 3 }).slice(0, 255),
+        departureDate: Moment().add(3, 'days').toDate(),
+        returnDate: Moment().add(9, 'days').toDate(),
+        destinationId: destinations[4].id,
+      };
+
+      quote = await quoteProvider.createOne(data);
+    });
+
+    it('updates the fields', async () => {
+      const departureDate = Moment().add(4, 'days').toDate();
+      const dto = plainToClass(UpdateQuoteDTO, { departureDate });
+      const result = await service.updateQuote(quote.id, dto);
+      expect(result.departureDate).toEqual(departureDate);
+
+      const row = await quoteProvider.repo.findOne(quote.id);
+      expect(row).toEqual(result);
+    });
+
+    it('throws NotFound if no id matches', async () => {
+      const departureDate = Moment().add(4, 'days').toDate();
+      const dto = plainToClass(UpdateQuoteDTO, { departureDate });
+      try {
+        await service.updateQuote(uuid(), dto);
+        throw new Error('Expected a NotFoundException and threw none');
+      } catch(err){ 
+        expect(err instanceof NotFoundException).toBeTruthy();
+      }
+    });
+  });
+
+  describe('#listAll', () => {
+    let quotes: QuoteModel[];
+
+    beforeEach(async () => {
+      const qdata = destinations.map(d => ({
+        name: loremIpsum({ count: 3 }).slice(0, 255),
+        departureDate: Moment().add(3, 'days').toDate(),
+        returnDate: Moment().add(9, 'days').toDate(),
+        destinationId: d.id,
+      }));
+
+      // descending order sort
+      quotes = await quoteProvider.createMany(... qdata);
+      quotes.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    });
+
+    afterEach(async () => {
+      await quoteProvider
+        .queryBuilder()
+        .delete()
+        .whereInIds(quotes.map(a => a.id))
+        .execute();
+    });
+
+    it('lists all items', async () => {
+      const items = await service.listAll();
+
+      const savedIds = quotes.map(a => a.id);
+      const returnedIds = items.map(a => a.id);
+
+      const allMatch = savedIds.every(a => returnedIds.includes(a));
+      expect(allMatch).toBeTruthy();
+    });
+
   });
 });
