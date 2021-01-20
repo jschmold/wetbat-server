@@ -71,3 +71,10 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Environment Variables
+
+| Var Name | Description |
+| :------- | :---------- |
+| USE_SSL  | Helpful for connecting to AWS / Heroku databases, where you force or ignore SSL. Default false, set to "true" to use SSL and make AWS/Heroku work |
+| DATABASE_URL | The PG connection string. This is the env var that Heroku uses, so I am using it here for deployment ease. |
