@@ -29,6 +29,10 @@ export class QuotesService {
     return model;
   }
   
+  /**
+   * Use validated data, and update a quote against an ID. This will throw a NotFoundException if
+   * there are no quotes matching the id provided. Returns the latest version of a quote.
+   */
   public async updateQuote(id: string, arg: UpdateQuoteDTO) : Promise<QuoteModel> {
     const updateData: Partial<QuoteModel> = {};
     for (const [ key, value ] of Object.entries(arg)) {
