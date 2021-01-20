@@ -2,7 +2,7 @@ import Moment from 'moment';
 import { loremIpsum } from 'lorem-ipsum';
 import { setupDefaultApp } from "@app/app";
 import { AppModule } from "@app/app.module";
-import { DestinationModel } from "@app/quotes/models/destination.model";
+import { DestinationModel } from "@app/destinations/models/destination.model";
 import { QuotesService } from "@app/quotes/quotes.service";
 import { Database } from "@e2e/database";
 import { DestinationProvider } from "@e2e/providers/destination.provider";

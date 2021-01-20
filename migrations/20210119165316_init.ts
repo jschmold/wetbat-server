@@ -1,4 +1,8 @@
+/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Knex from 'knex';
+
+import destinations from './destinations.json';
 
 export async function up(knex: Knex): Promise<void> {
   await knex.raw(
@@ -12,7 +16,10 @@ export async function up(knex: Knex): Promise<void> {
     .withSchema('app')
     .createTable('destinations', tbl => {
       tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
+
       tbl.string('name', 256);
+      tbl.string('airport_code', 3).notNullable();
+      tbl.string('country', 256).notNullable();
 
       tbl.timestamp('created_at')
         .defaultTo(knex.fn.now())
@@ -76,6 +83,14 @@ export async function up(knex: Knex): Promise<void> {
 
       tbl.string('travel_method', 256);
     });
+
+  const destinationData = destinations.codes.map(([ name, country, airport_code ]) => ({
+    name: name.trim(),
+    country: country.trim(),
+    airport_code: airport_code.trim(),
+  }));
+
+  await knex.table('app.destinations').insert(destinationData);
 }
 
 export async function down(knex: Knex): Promise<void> {
