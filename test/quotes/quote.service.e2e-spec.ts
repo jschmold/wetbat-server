@@ -59,7 +59,11 @@ describe('QuotesModule - QuotesService', () => {
 
   describe('#createQuote', () => {
     let dto: CreateQuoteDTO;
+
+    let cleanupIds: string[];
+
     beforeEach(() => {
+      cleanupIds = [];
       const name = loremIpsum({ count: 2 });
 
       dto = new CreateQuoteDTO();
@@ -67,12 +71,20 @@ describe('QuotesModule - QuotesService', () => {
       dto.returnDate = Moment().add(30, 'days').toDate();
       dto.departureDate = Moment().add(14, 'days').toDate();
       dto.destinationId = destinations[2].id;
+    });
 
+    afterEach(async () => {
+      await quoteProvider
+        .queryBuilder('quote')
+        .delete()
+        .whereInIds(cleanupIds)
+        .execute();
     });
 
     it('inserts the quote', async () => {
       const model = await service.createQuote(dto);
       expect(model).toBeTruthy();
+      cleanupIds.push(model.id);
 
       const row: QuoteModel = await quoteProvider.repo.findOne(model.id);
       expect(row).toEqual(model);

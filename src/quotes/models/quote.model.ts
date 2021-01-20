@@ -17,7 +17,7 @@ export class QuoteModel {
 
   @ManyToOne(() => DestinationModel)
   @JoinColumn({ name: 'destination_id', referencedColumnName: 'id' })
-  public destination: DestinationModel;
+  public destination?: DestinationModel;
 
   @Column({ name: 'destination_id', type: 'uuid' })
   public destinationId: string;
@@ -29,5 +29,5 @@ export class QuoteModel {
   public returnDate: Date;
 
   @Column({ name: 'travel_method', type: 'varchar' })
-  public travelMethod: string;
+  public travelMethod: string | null;
 }
