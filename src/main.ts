@@ -1,4 +1,3 @@
-// tslint:disable
 import 'module-alias/register';
 import 'reflect-metadata';
 
@@ -56,5 +55,3 @@ function initialize(): void {
 }
 
 initialize();
-
-// tslint:enable
