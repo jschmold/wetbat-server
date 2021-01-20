@@ -1,10 +1,16 @@
-import {setupDefaultApp} from "@app/app";
-import {AppModule} from "@app/app.module";
-import {QuotesService} from "@app/quotes/quotes.service";
-import {Database} from "@e2e/database";
-import {QuoteProvider} from "@e2e/providers/quote.provider";
-import {INestApplication} from "@nestjs/common";
-import {TestingModule, Test} from "@nestjs/testing";
+import Moment from 'moment';
+import { loremIpsum } from 'lorem-ipsum';
+import { setupDefaultApp } from "@app/app";
+import { AppModule } from "@app/app.module";
+import { DestinationModel } from "@app/quotes/models/destination.model";
+import { QuotesService } from "@app/quotes/quotes.service";
+import { Database } from "@e2e/database";
+import { DestinationProvider } from "@e2e/providers/destination.provider";
+import { QuoteProvider } from "@e2e/providers/quote.provider";
+import { INestApplication } from "@nestjs/common";
+import { TestingModule, Test } from "@nestjs/testing";
+import { CreateQuoteDTO } from '@app/quotes/dto/create-quote.dto';
+import { QuoteModel } from '@app/quotes/models/quote.model';
 
 describe('QuotesModule - QuotesService', () => {
   let app: INestApplication;
@@ -12,12 +18,17 @@ describe('QuotesModule - QuotesService', () => {
 
   let db: Database;
   let quoteProvider: QuoteProvider;
+  let destinationProvider: DestinationProvider;
+
+  let destinations: DestinationModel[];
 
   beforeAll(async () => {
-    db = new Database(QuoteProvider);
-    await db.connect('OrganizationService E2E Tests');
+    db = new Database(QuoteProvider, DestinationProvider);
+    await db.connect('QuoteService E2E Tests');
 
     quoteProvider = db.getProvider(QuoteProvider);
+    destinationProvider = db.getProvider(DestinationProvider);
+    destinations = await destinationProvider.generateMany();
   });
 
   beforeEach(async () => {
@@ -37,6 +48,34 @@ describe('QuotesModule - QuotesService', () => {
   });
 
   afterAll(async () => {
+    await destinationProvider
+      .queryBuilder('dest')
+      .delete()
+      .whereInIds(destinations.map(a => a.id))
+      .execute();
+    
     await db.disconnect();
+  });
+
+  describe('#createQuote', () => {
+    let dto: CreateQuoteDTO;
+    beforeEach(() => {
+      const name = loremIpsum({ count: 2 });
+
+      dto = new CreateQuoteDTO();
+      dto.name = name;
+      dto.returnDate = Moment().add(30, 'days').toDate();
+      dto.departureDate = Moment().add(14, 'days').toDate();
+      dto.destinationId = destinations[2].id;
+
+    });
+
+    it('inserts the quote', async () => {
+      const model = await service.createQuote(dto);
+      expect(model).toBeTruthy();
+
+      const row: QuoteModel = await quoteProvider.repo.findOne(model.id);
+      expect(row).toEqual(model);
+    });
   });
 });

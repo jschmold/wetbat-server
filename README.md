@@ -78,3 +78,5 @@ Nest is [MIT licensed](LICENSE).
 | :------- | :---------- |
 | USE_SSL  | Helpful for connecting to AWS / Heroku databases, where you force or ignore SSL. Default false, set to "true" to use SSL and make AWS/Heroku work |
 | DATABASE_URL | The PG connection string. This is the env var that Heroku uses, so I am using it here for deployment ease. |
+| FORK_COUNT | How many process forks to create, must have USE_FORK=true in environment to work. Default = os.cpus() |
+| USE_FORK | Whether or not to use the Node clustering to improve performance, default = true. Access y, yes, t, and true. Anything other non-empty value is considered false. |

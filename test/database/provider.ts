@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { Database } from '.';
 import { Model } from './models';
 import { Repository } from 'typeorm';
@@ -13,8 +14,8 @@ export abstract class DatabaseProvider<T> {
 
   constructor(protected db: Database) { }
 
-  public abstract async createOne(... args: any[]): Promise<T>;
-  public abstract async createMany(... args: any[]): Promise<T[]>;
+  public abstract createOne(... args: any[]): Promise<T>;
+  public abstract createMany(... args: any[]): Promise<T[]>;
 
   public async delete(arg: Erasure<T>): Promise<void> {
     await this.repo.delete(arg);
@@ -22,7 +23,7 @@ export abstract class DatabaseProvider<T> {
 }
 
 export function ProvideModels(... arg: Model[]) {
-  return function (ctor: Function) {
+  return function (ctor: Function): void {
     Reflect.set(ctor, '__models', arg);
-  }
+  };
 }

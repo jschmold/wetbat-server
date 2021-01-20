@@ -10,11 +10,12 @@ export class AppEnvironment {
   public port: number;
 
   constructor() {
-    const processLimit = !!process.env.FORK_COUNT
-      ? parseInt(process.env.FORK_COUNT)
+    const envForkCount = getEnvVar(Environment.forkCount);
+    const processLimit = !!envForkCount
+      ? parseInt(envForkCount, 10)
       : os.cpus().length;
 
-    const forkMatch = /(y|yes|true)/i;
+    const forkMatch = /(y|yes|t|true)/i;
     const fork = (getEnvVar(Environment.fork) || 'TRUE').toLowerCase();
 
     this.useFork = forkMatch.test(fork);

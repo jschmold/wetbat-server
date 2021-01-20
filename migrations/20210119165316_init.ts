@@ -11,14 +11,14 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema
     .withSchema('app')
     .createTable('destinations', tbl => {
-      tbl.uuid('id').primary();
+      tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
       tbl.string('name', 256);
 
-      tbl.timestamp('createdAt')
+      tbl.timestamp('created_at')
         .defaultTo(knex.fn.now())
         .notNullable();
 
-      tbl.timestamp('updatedAt')
+      tbl.timestamp('updated_at')
         .defaultTo(knex.fn.now())
         .notNullable();
     });
@@ -28,14 +28,14 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema
     .withSchema('app')
     .createTable('travel_methods', tbl => {
-      tbl.uuid('id').primary();
+      tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
       tbl.text('name', 'varchar(256)');
 
-      tbl.timestamp('createdAt')
+      tbl.timestamp('created_at')
         .defaultTo(knex.fn.now())
         .notNullable();
 
-      tbl.timestamp('updatedAt')
+      tbl.timestamp('updated_at')
         .defaultTo(knex.fn.now())
         .notNullable();
     });
@@ -46,7 +46,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema
     .withSchema('app')
     .createTable('quotes', tbl => {
-      tbl.uuid('id').primary();
+      tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
 
       tbl.string('name', 256).notNullable();
 
