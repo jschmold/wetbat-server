@@ -1,7 +1,6 @@
 import { setupDefaultApp } from "@app/app";
 import { AppModule } from "@app/app.module";
 import { DestinationsService } from "@app/destinations/destinations.service";
-import { CreateUpdateDestinationDTO } from "@app/destinations/dto/create-update-destination.dto";
 import { DestinationModel } from "@app/destinations/models/destination.model";
 import { KeysOf } from "@app/shared/types";
 import { Database } from "@e2e/database";
@@ -11,6 +10,8 @@ import { TestingModule, Test } from "@nestjs/testing";
 import { plainToClass } from "class-transformer";
 import { v4 as uuid } from 'uuid';
 import { loremIpsum } from "lorem-ipsum";
+import { CreateDestinationDTO } from "@app/destinations/dto/create-destination.dto";
+import { UpdateDestinationDTO } from "@app/destinations/dto/update-destination.dto";
 
 describe('QuotesModule - QuotesService', () => {
   let app: INestApplication;
@@ -47,10 +48,10 @@ describe('QuotesModule - QuotesService', () => {
   });
 
   describe('#createDestination', () => {
-    let dto: CreateUpdateDestinationDTO;
+    let dto: CreateDestinationDTO;
 
     beforeEach(() => {
-      dto = plainToClass(CreateUpdateDestinationDTO, {
+      dto = plainToClass(CreateDestinationDTO, {
         airportCode: 'YYC',
         country: 'Canada',
         name: loremIpsum({ count: 3 }),
@@ -87,12 +88,12 @@ describe('QuotesModule - QuotesService', () => {
 
   describe('#updateDestination', () => {
     let destination: DestinationModel;
-    let dto: CreateUpdateDestinationDTO;
+    let dto: UpdateDestinationDTO;
 
     beforeEach(async () => {
       destination = await destinationProvider.generateOne();
 
-      dto = plainToClass(CreateUpdateDestinationDTO, {
+      dto = plainToClass(UpdateDestinationDTO, {
         airportCode: 'TAT',
         country: 'E2E Update Test',
         name: loremIpsum({ count: 3 }),
@@ -108,7 +109,7 @@ describe('QuotesModule - QuotesService', () => {
       const row = await destinationProvider.repo.findOne(destination.id);
       expect(result).toEqual(row);
 
-      const keys: KeysOf<CreateUpdateDestinationDTO> = [ 'airportCode', 'country', 'name' ];
+      const keys: KeysOf<UpdateDestinationDTO> = [ 'airportCode', 'country', 'name' ];
       for (const key of keys) {
         expect(result[key]).toEqual(dto[key]);
       }

@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUpdateDestinationDTO } from './dto/create-update-destination.dto';
+import { CreateDestinationDTO } from './dto/create-destination.dto';
+import { UpdateDestinationDTO } from './dto/update-destination.dto';
 import { DestinationModel } from './models/destination.model';
 
 @Injectable()
@@ -15,7 +16,7 @@ export class DestinationsService {
   /**
    * Create a brand new destination. This does not require uniqueness, and also does not
    */
-  public async createDestination(arg: CreateUpdateDestinationDTO): Promise<DestinationModel> {
+  public async createDestination(arg: CreateDestinationDTO): Promise<DestinationModel> {
     const created = this.destinationRepo.create(arg);
 
     await this.destinationRepo
@@ -31,7 +32,7 @@ export class DestinationsService {
   /**
    * Update an existing destination with a validated CreateUpdateDestinationDTO
    */
-  public async updateDestination(id: string, arg: CreateUpdateDestinationDTO): Promise<DestinationModel> {
+  public async updateDestination(id: string, arg: UpdateDestinationDTO): Promise<DestinationModel> {
     const target = await this.destinationRepo.findOne(id);
     if (!target) {
       throw new NotFoundException();

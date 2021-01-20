@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { DestinationsService } from './destinations.service';
+import { DestinationModel } from './models/destination.model';
 
 describe('DestinationsService', () => {
   let service: DestinationsService;
@@ -7,7 +9,10 @@ describe('DestinationsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test
       .createTestingModule({
-        providers: [ DestinationsService ],
+        providers: [
+          DestinationsService,
+          { provide: getRepositoryToken(DestinationModel), useValue: jest.fn() },
+        ],
       })
       .compile();
 

@@ -2,7 +2,7 @@ import { Exclude, Expose } from "class-transformer";
 import { IsString, Length, MaxLength } from "class-validator";
 
 @Exclude()
-export class CreateUpdateDestinationDTO {
+export class CreateDestinationDTO {
 
   @Expose()
   @IsString()
