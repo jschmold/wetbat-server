@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
@@ -14,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
     .withSchema('app')
     .createTable('destinations', tbl => {
       tbl.uuid('id').primary();
-      tbl.text('name', 'varchar(256)');
+      tbl.string('name', 256);
 
       tbl.timestamp('createdAt')
         .defaultTo(knex.fn.now())
@@ -50,8 +48,7 @@ export async function up(knex: Knex): Promise<void> {
     .createTable('quotes', tbl => {
       tbl.uuid('id').primary();
 
-      tbl.text('name', 'varchar(256)')
-        .notNullable();
+      tbl.string('name', 256).notNullable();
 
       tbl.uuid('destination_id')
         .references('id')
@@ -62,13 +59,14 @@ export async function up(knex: Knex): Promise<void> {
       tbl.dateTime('departure_date')
         .notNullable();
 
-      tbl.dateTime('return_date');
+      tbl.dateTime('return_date')
+        .notNullable();
 
       tbl.integer('travellers')
         .notNullable()
         .defaultTo(1);
 
-      tbl.text('travel_method');
+      tbl.string('travel_method', 256);
     });
 }
 
@@ -84,4 +82,6 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema
     .withSchema('app')
     .dropTable('destinations');
+
+  await knex.schema.dropSchema('app');
 }
