@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { DestinationModel } from "./destination.model";
+import { DestinationModel } from "@app/destinations/models/destination.model";
 
 /**
  * The datatype that represents the quote that the user has built up for a client.

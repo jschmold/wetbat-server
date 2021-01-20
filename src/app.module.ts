@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from './shared/config.service';
 import { SharedModule } from './shared/shared.module';
 import { QuotesModule } from './quotes/quotes.module';
+import { DestinationsModule } from './destinations/destinations.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { QuotesModule } from './quotes/quotes.module';
       },
     }),
     QuotesModule,
+    DestinationsModule,
   ],
   controllers: [],
   providers: [],

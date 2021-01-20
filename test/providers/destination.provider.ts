@@ -1,6 +1,6 @@
 import { loremIpsum } from 'lorem-ipsum';
 
-import { DestinationModel } from "@app/quotes/models/destination.model";
+import { DestinationModel } from "@app/destinations/models/destination.model";
 import { ProvideModels, DatabaseProvider } from "@e2e/database/provider";
 import { QueryBuilder, QueryRunner, Repository } from "typeorm";
 

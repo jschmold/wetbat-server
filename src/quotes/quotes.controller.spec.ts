@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { BadRequestException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { QuoteModel } from './models/quote.model';
-import {UpdateQuoteDTO} from './dto/update-quote.dto';
+import { UpdateQuoteDTO } from './dto/update-quote.dto';
 
 describe('QuotesController', () => {
   let controller: QuotesController;
