@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUpdateDestinationDTO } from './dto/create-update-destination.dto';
@@ -31,15 +31,32 @@ export class DestinationsService {
   /**
    * Update an existing destination with a validated CreateUpdateDestinationDTO
    */
-  public updateDestination(): Promise<DestinationModel> {
-    throw new NotImplementedException();
+  public async updateDestination(id: string, arg: CreateUpdateDestinationDTO): Promise<DestinationModel> {
+    const target = await this.destinationRepo.findOne(id);
+    if (!target) {
+      throw new NotFoundException();
+    }
+
+    const updateData: Partial<DestinationModel> = {};
+    for (const [ key, value ] of Object.entries(arg)) {
+      if (value == null) continue;
+      updateData[key] = value;
+    }
+
+    await this.destinationRepo.createQueryBuilder()
+      .update(updateData)
+      .whereEntity(target)
+      .returning('*')
+      .execute();
+
+    return target;
   }
 
   /**
    * List all destinations, ordered by their airport code
    */
   public listAllDestinations(): Promise<DestinationModel[]> {
-    throw new NotImplementedException();
+    return this.destinationRepo.find();
   }
 }
 

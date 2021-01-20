@@ -5,7 +5,9 @@ import { ProvideModels, DatabaseProvider } from "@e2e/database/provider";
 import { QueryBuilder, QueryRunner, Repository } from "typeorm";
 
 export interface IOneDestination {
-  name:string;
+  name: string;
+  airportCode: string;
+  country: string;
 }
 
 @ProvideModels(DestinationModel)
@@ -48,17 +50,23 @@ export class DestinationProvider extends DatabaseProvider<DestinationModel> {
    */
   public generateOne(): Promise<DestinationModel> {
     const name = this.randomName();
-    return this.createOne({ name });
+    return this.createOne({ name, airportCode: 'TST', country: 'E2E TEST COUNTRY' });
   }
 
   /**
    * Generate multiple destinations with random names. Default amount is 5.
    */
   public generateMany(amt = 5): Promise<DestinationModel[]> {
-    const names = [];
-    for (let i = 0; i < amt; ++i) names.push(this.randomName());
+    const dataset = [];
+    for (let i = 0; i < amt; ++i) {
+      dataset.push({
+        name: this.randomName(),
+        airportCode: 'TST',
+        country: 'E2E TEST COUNTRY',
+      });
+    }
 
-    return this.createMany(... names);
+    return this.createMany(... dataset);
   }
 
   private randomName(): string {
