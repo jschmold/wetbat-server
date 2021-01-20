@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { DestinationModel } from "./destination.model";
 
 /**
@@ -9,8 +9,10 @@ import { DestinationModel } from "./destination.model";
 @Entity({ schema: 'app', name: 'quotes' })
 export class QuoteModel {
 
+  @PrimaryColumn('uuid')
   public id: string;
 
+  @Column({ type: 'varchar', length: 256 })
   public name: string;
 
   @ManyToOne(() => DestinationModel)
@@ -20,10 +22,10 @@ export class QuoteModel {
   @Column({ name: 'destination_id', type: 'uuid' })
   public destinationId: string;
 
-  @Column({ name: 'departure_date', type: 'datetime' })
+  @Column({ name: 'departure_date', type: 'timestamptz' })
   public departureDate: Date;
 
-  @Column({ name: 'return_date', type: 'datetime' })
+  @Column({ name: 'return_date', type: 'timestamptz' })
   public returnDate: Date;
 
   @Column({ name: 'travel_method', type: 'varchar' })
