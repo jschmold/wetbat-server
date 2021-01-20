@@ -48,6 +48,14 @@ export async function up(knex: Knex): Promise<void> {
     .createTable('quotes', tbl => {
       tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
 
+      tbl.timestamp('created_at')
+        .defaultTo(knex.fn.now())
+        .notNullable();
+
+      tbl.timestamp('updated_at')
+        .defaultTo(knex.fn.now())
+        .notNullable();
+
       tbl.string('name', 256).notNullable();
 
       tbl.uuid('destination_id')
