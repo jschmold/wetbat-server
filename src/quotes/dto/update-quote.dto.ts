@@ -1,4 +1,4 @@
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 import {IsOptional, IsString, IsUUID, IsDate, IsEmail, MaxLength} from "class-validator";
 
 /**
@@ -26,11 +26,13 @@ export class UpdateQuoteDTO {
   @Expose()
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   public departureDate?: Date;
 
   @Expose()
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   public returnDate?: Date;
 
   @Expose()

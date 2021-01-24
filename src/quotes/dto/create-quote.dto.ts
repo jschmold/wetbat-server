@@ -1,4 +1,4 @@
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 import { IsDate, IsEmail, IsOptional, IsString, IsUUID, MaxLength } from "class-validator";
 
 /**
@@ -22,10 +22,12 @@ export class CreateQuoteDTO {
 
   @Expose()
   @IsDate()
+  @Type(() => Date)
   public departureDate: Date;
 
   @Expose()
   @IsDate()
+  @Type(() => Date)
   public returnDate: Date;
 
   @Expose()

@@ -107,6 +107,10 @@ describe('QuotesModule - QuotesService', () => {
       quote = await quoteProvider.createOne(data);
     });
 
+    afterEach(async () => {
+      await quoteProvider.delete({ id: quote.id });
+    });
+
     it('updates the fields', async () => {
       const departureDate = Moment().add(4, 'days').toDate();
       const dto = plainToClass(UpdateQuoteDTO, { departureDate });
