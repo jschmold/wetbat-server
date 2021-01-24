@@ -13,7 +13,6 @@ import { CreateQuoteDTO } from '@app/quotes/dto/create-quote.dto';
 import { QuoteModel } from '@app/quotes/models/quote.model';
 import { plainToClass } from 'class-transformer';
 import { UpdateQuoteDTO } from '@app/quotes/dto/update-quote.dto';
-import { v4 as uuid } from 'uuid';
 
 describe('QuotesModule - QuotesService', () => {
   let app: INestApplication;
@@ -31,7 +30,7 @@ describe('QuotesModule - QuotesService', () => {
 
     quoteProvider = db.getProvider(QuoteProvider);
     destinationProvider = db.getProvider(DestinationProvider);
-    destinations = await destinationProvider.generateMany(20);
+    destinations = await destinationProvider.generateMany();
   });
 
   beforeEach(async () => {
@@ -63,7 +62,7 @@ describe('QuotesModule - QuotesService', () => {
   describe('#createQuote', () => {
     let dto: CreateQuoteDTO;
 
-    let cleanupIds: string[];
+    let cleanupIds: number[];
 
     beforeEach(() => {
       cleanupIds = [];
@@ -71,11 +70,9 @@ describe('QuotesModule - QuotesService', () => {
 
       dto = new CreateQuoteDTO();
       dto.name = name;
-      dto.email = '';
       dto.returnDate = Moment().add(30, 'days').toDate();
       dto.departureDate = Moment().add(14, 'days').toDate();
       dto.destinationId = destinations[2].id;
-      dto.fromId = destinations[1].id;
     });
 
     afterEach(async () => {
@@ -104,7 +101,6 @@ describe('QuotesModule - QuotesService', () => {
         name: loremIpsum({ count: 3 }).slice(0, 255),
         departureDate: Moment().add(3, 'days').toDate(),
         returnDate: Moment().add(9, 'days').toDate(),
-        fromid: destinations[2].id,
         destinationId: destinations[4].id,
       };
 
@@ -125,7 +121,7 @@ describe('QuotesModule - QuotesService', () => {
       const departureDate = Moment().add(4, 'days').toDate();
       const dto = plainToClass(UpdateQuoteDTO, { departureDate });
       try {
-        await service.updateQuote(uuid(), dto);
+        await service.updateQuote(-1, dto);
         throw new Error('Expected a NotFoundException and threw none');
       } catch(err){ 
         expect(err instanceof NotFoundException).toBeTruthy();
@@ -137,22 +133,15 @@ describe('QuotesModule - QuotesService', () => {
     let quotes: QuoteModel[];
 
     beforeEach(async () => {
-      const qdata = destinations.map((d, i) => {
-        const previousIndex = i - 1 === -1
-          ? destinations.length - 1
-          : i - 1;
-
-        return {
-          name: loremIpsum({ count: 3 }).slice(0, 255),
-          departureDate: Moment().add(3, 'days').toDate(),
-          returnDate: Moment().add(9, 'days').toDate(),
-          destinationId: d.id,
-          fromId: destinations[previousIndex],
-        };
-      });
+      const qdata = destinations.map(d => ({
+        name: loremIpsum({ count: 3 }).slice(0, 255),
+        departureDate: Moment().add(3, 'days').toDate(),
+        returnDate: Moment().add(9, 'days').toDate(),
+        destinationId: d.id,
+      }));
 
       // descending order sort
-      quotes = await quoteProvider.createMany(...qdata as any[]);
+      quotes = await quoteProvider.createMany(... qdata);
       quotes.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     });
 

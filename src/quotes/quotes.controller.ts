@@ -51,7 +51,7 @@ export class QuotesController {
    */
   @Patch('id')
   public updateQuote(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() dto: UpdateQuoteDTO,
   ): Promise<QuoteModel> {
     if (!dto.datesAreValid) {

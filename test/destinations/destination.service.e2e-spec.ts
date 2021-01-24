@@ -54,7 +54,7 @@ describe('QuotesModule - QuotesService', () => {
       dto = plainToClass(CreateDestinationDTO, {
         airportCode: 'YYC',
         country: 'Canada',
-        name: loremIpsum({ count: 3 }),
+        name: loremIpsum({ count: 3 }).slice(0, 244),
       });
     });
 
@@ -96,7 +96,7 @@ describe('QuotesModule - QuotesService', () => {
       dto = plainToClass(UpdateDestinationDTO, {
         airportCode: 'TAT',
         country: 'E2E Update Test',
-        name: loremIpsum({ count: 3 }),
+        name: loremIpsum({ count: 3 }).slice(0, 244),
       });
     });
 

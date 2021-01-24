@@ -53,7 +53,8 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema
     .withSchema('app')
     .createTable('quotes', tbl => {
-      tbl.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
+      tbl.specificType('id', 'serial').primary();
+      tbl.uuid('oid').unique().defaultTo(knex.raw('uuid_generate_v4()'));
 
       tbl.timestamp('created_at')
         .defaultTo(knex.fn.now())

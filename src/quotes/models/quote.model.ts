@@ -3,14 +3,15 @@ import { DestinationModel } from "@app/destinations/models/destination.model";
 
 /**
  * The datatype that represents the quote that the user has built up for a client.
- * 
- * TODO: Add contact details, and an estimation field (money)
  */
 @Entity({ schema: 'app', name: 'quotes' })
 export class QuoteModel {
 
-  @PrimaryColumn('uuid')
-  public id: string;
+  @PrimaryColumn('integer')
+  public id: number;
+
+  @Column({ type: 'uuid' })
+  public oid: string;
 
   @Column({ name: 'created_at', type: 'timestamptz' })
   public createdAt: Date;
