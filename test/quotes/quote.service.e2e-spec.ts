@@ -31,7 +31,7 @@ describe('QuotesModule - QuotesService', () => {
 
     quoteProvider = db.getProvider(QuoteProvider);
     destinationProvider = db.getProvider(DestinationProvider);
-    destinations = await destinationProvider.generateMany();
+    destinations = await destinationProvider.generateMany(20);
   });
 
   beforeEach(async () => {
@@ -71,9 +71,11 @@ describe('QuotesModule - QuotesService', () => {
 
       dto = new CreateQuoteDTO();
       dto.name = name;
+      dto.email = '';
       dto.returnDate = Moment().add(30, 'days').toDate();
       dto.departureDate = Moment().add(14, 'days').toDate();
       dto.destinationId = destinations[2].id;
+      dto.fromId = destinations[1].id;
     });
 
     afterEach(async () => {
@@ -102,6 +104,7 @@ describe('QuotesModule - QuotesService', () => {
         name: loremIpsum({ count: 3 }).slice(0, 255),
         departureDate: Moment().add(3, 'days').toDate(),
         returnDate: Moment().add(9, 'days').toDate(),
+        fromid: destinations[2].id,
         destinationId: destinations[4].id,
       };
 
@@ -134,15 +137,22 @@ describe('QuotesModule - QuotesService', () => {
     let quotes: QuoteModel[];
 
     beforeEach(async () => {
-      const qdata = destinations.map(d => ({
-        name: loremIpsum({ count: 3 }).slice(0, 255),
-        departureDate: Moment().add(3, 'days').toDate(),
-        returnDate: Moment().add(9, 'days').toDate(),
-        destinationId: d.id,
-      }));
+      const qdata = destinations.map((d, i) => {
+        const previousIndex = i - 1 === -1
+          ? destinations.length - 1
+          : i - 1;
+
+        return {
+          name: loremIpsum({ count: 3 }).slice(0, 255),
+          departureDate: Moment().add(3, 'days').toDate(),
+          returnDate: Moment().add(9, 'days').toDate(),
+          destinationId: d.id,
+          fromId: destinations[previousIndex],
+        };
+      });
 
       // descending order sort
-      quotes = await quoteProvider.createMany(... qdata);
+      quotes = await quoteProvider.createMany(...qdata as any[]);
       quotes.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     });
 

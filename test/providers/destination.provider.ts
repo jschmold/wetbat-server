@@ -70,6 +70,6 @@ export class DestinationProvider extends DatabaseProvider<DestinationModel> {
   }
 
   private randomName(): string {
-    return loremIpsum({ count: 5 }).slice(0, 255);
+    return loremIpsum({ count: 5 }).slice(0, 254);
   }
 }

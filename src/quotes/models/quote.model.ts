@@ -21,6 +21,9 @@ export class QuoteModel {
   @Column({ type: 'varchar', length: 256 })
   public name: string;
 
+  @Column({ type: 'varchar', length: 128 })
+  public email: string;
+
   @ManyToOne(() => DestinationModel)
   @JoinColumn({ name: 'destination_id', referencedColumnName: 'id' })
   public destination?: DestinationModel;
@@ -30,6 +33,13 @@ export class QuoteModel {
 
   @Column({ name: 'departure_date', type: 'timestamptz' })
   public departureDate: Date;
+
+  @Column({ name: 'from_id', type: 'uuid' })
+  public fromId: string;
+
+  @ManyToOne(() => DestinationModel)
+  @JoinColumn({ name: 'from_id', referencedColumnName: 'id' })
+  public from?: DestinationModel;
 
   @Column({ name: 'return_date', type: 'timestamptz' })
   public returnDate: Date;

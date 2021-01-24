@@ -64,6 +64,18 @@ export async function up(knex: Knex): Promise<void> {
         .notNullable();
 
       tbl.string('name', 256).notNullable();
+      tbl.string('email', 128);
+      tbl.string('phone', 50);
+
+      tbl.specificType('amount', 'money')
+        .notNullable()
+        .defaultTo(0.00);
+
+      tbl.uuid('from_id')
+        .references('id')
+        .inTable('app.destinations')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL');
 
       tbl.uuid('destination_id')
         .references('id')
@@ -82,6 +94,7 @@ export async function up(knex: Knex): Promise<void> {
         .defaultTo(1);
 
       tbl.string('travel_method', 256);
+      
     });
 
   const destinationData = destinations.codes.map(([ name, country, airport_code ]) => ({

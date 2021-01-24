@@ -1,5 +1,5 @@
 import { Exclude, Expose } from "class-transformer";
-import { IsDate, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsDate, IsEmail, IsOptional, IsString, IsUUID, MaxLength } from "class-validator";
 
 /**
  * The datatype responsible for ensuring that at the bare minimum, the user is giving us
@@ -11,6 +11,10 @@ export class CreateQuoteDTO {
   @Expose()
   @IsString()
   public name: string;
+
+  @Expose()
+  @IsUUID()
+  public fromId: string;
 
   @Expose()
   @IsUUID()
@@ -28,6 +32,18 @@ export class CreateQuoteDTO {
   @IsOptional()
   @IsString()
   public travelMethod: string;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  public email: string;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @MaxLength(16)
+  public phone: string;
   
   public get datesAreValid(): boolean {
     if (!this.departureDate || !this.returnDate) return false;

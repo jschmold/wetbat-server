@@ -36,7 +36,7 @@ export class QuotesService {
    * Use validated data, and update a quote against an ID. This will throw a NotFoundException if
    * there are no quotes matching the id provided. Returns the latest version of a quote.
    */
-  public async updateQuote(id: string, arg: UpdateQuoteDTO) : Promise<QuoteModel> {
+  public async updateQuote(id: string, arg: UpdateQuoteDTO): Promise<QuoteModel> {
     const target = await this.quoteRepo.findOne(id);
     if (!target) {
       throw new NotFoundException();
